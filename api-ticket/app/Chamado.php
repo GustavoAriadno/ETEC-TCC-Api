@@ -13,10 +13,7 @@ class Chamado extends Model
 		'idLocal',
 		'idEquipamento',
 		'idUsuario',
-		'solucao',
-		'avaliacao',
 		'dataAbertura',
-		'dataFechamento',
 		'prioridade'
 	];
 }
