@@ -18,6 +18,11 @@ class ChamadoController extends Controller
 	}
 
 	public function store(Request $request) {
+		// CHECK if "problem", "email" or "sigla" exists
+		if ($request["sigla"] == NULL ||
+			$request["email"] == NULL ||
+			$request["problema"] == NULL) return response() -> json(null, 200);
+		
 		// CHECK if the user EMAIL is in the database and GET id from user
 		$request["idUsuario"] = UsuarioController::IsEmailOnDB($request["email"]);
 		if (!$request["idUsuario"]) return response() -> json(null, 200);

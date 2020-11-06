@@ -5,8 +5,9 @@ $router->get('/', function () use ($router) {
 });
 
 // SERVICES
-// $router->get('/sendemail', "SendEmailController@send");
-// $router->get('/verifyotp', "verifyotpController@check");
+$router->get('/sendemail', "OtpController@send");
+$router->get('/verifyotp', "OtpController@check");
+$router->get('/tests', "OtpController@test");
 
 // CHAMADOS
 $router->get('/chamados', "ChamadoController@index");
@@ -17,6 +18,9 @@ $router->get('/chamados/{sigla}', "ChamadoController@tooManyChamados");
 // EQUIPAMENTOS
 $router->get('/equipamentos', "EquipamentoController@index");
 $router->get('/equipamentos/{id}', "EquipamentoController@show");
+
+// TESTAR
+$router->get('/equipamentos/{sigla}', "EquipamentoController@isSiglaOnDB");
 
 // LOCAIS
 $router->get('/locais', "LocalController@index");

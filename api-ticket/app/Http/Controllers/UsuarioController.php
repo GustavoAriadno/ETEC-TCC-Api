@@ -20,14 +20,7 @@ class UsuarioController extends Controller
 	
 	public function store(Request $request){
 		return response() -> json(
-			// Usuario::create($request->all()),
-			Usuario::create([
-				"matricula" => $request->matricula,
-				"nome" => $request->nome,
-				"email" => $request->email,
-				"perfil" => $request->perfil,
-				"senha" => $request->senha
-			]),
+			Usuario::create($request->all()),
 			201
 		);
 	}
