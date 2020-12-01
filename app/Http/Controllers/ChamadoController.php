@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Chamado;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\EquipamentoController;
+
 
 class ChamadoController extends Controller
 {
@@ -11,8 +14,8 @@ class ChamadoController extends Controller
 		return Chamado::all();
 	}
 
-	public function show(int $id) {
-		$chamado = Chamado::find($id);
+	public function show(Request $request) {
+		$chamado = Chamado::find($request["id"]);
 		if (is_null($chamado)) return response() -> json(null, 204);
 		return ($chamado);
 	}
@@ -21,29 +24,29 @@ class ChamadoController extends Controller
 		// CHECK if "problem", "email" or "sigla" exists
 		if ($request["sigla"] == NULL ||
 			$request["email"] == NULL ||
-			$request["problema"] == NULL) return response() -> json(null, 200);
+			$request["problema"] == NULL) return response() -> json(["status" => -1], 200);
 		
 		// CHECK if the user EMAIL is in the database and GET id from user
 		$request["idUsuario"] = UsuarioController::IsEmailOnDB($request["email"]);
-		if (!$request["idUsuario"]) return response() -> json(null, 200);
+		if (!$request["idUsuario"]) return response() -> json(["status" => -2], 200);
 
 		// GET idEquipamento and idLocal from database
-		[$request["idEquipamento"], $request["idLocal"]] = EquipamentoController::isSiglaOnDB($request["sigla"]);
-		if (!$request["idEquipamento"] || !$request["idLocal"]) return response() -> json(null, 200);
+		list($request["idEquipamento"], $request["idLocal"]) = EquipamentoController::isSiglaOnDB($request["sigla"]);
+		if (!$request["idEquipamento"] || !$request["idLocal"]) return response() -> json(["status" => -3], 200);
 
 		// DATE of support request
 		$request["dataAbertura"] = date("Y-m-d H:i:s");
 
 		return response() -> json(
 			Chamado::create($request->all()),
-			201
+			200
 		);
 	}
 
 	public static function tooManyChamados(int $sigla) {
 		$i = 0;
 		$problemas = array();
-		// foreach(Chamado::all() as $chamado) if (json_decode($chamado)->sigla == $sigla) $problemas[$i++] = json_decode($chamado)->problema;
+
 		$chamados = Chamado::all();
 		foreach($chamados as $chamado) {
 			$ch = json_decode($chamado);
